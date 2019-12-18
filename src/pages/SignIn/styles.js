@@ -4,7 +4,7 @@ import Button from '~/components/Button';
 export const Container = styled.View`
   height: 100%;
   width: 100%;
-  background: #f2f2f2;
+  background: #fff;
   justify-content: center;
   padding: 25px;
 `;

@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Header from '~/components/Header';
 
 import {
   Container,
@@ -11,7 +11,6 @@ import {
   Item,
   Description,
 } from './styles';
-import Header from '~/components/Header';
 
 export default function CheckIns() {
   const checkins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
