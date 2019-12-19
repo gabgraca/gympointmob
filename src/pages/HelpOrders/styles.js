@@ -26,6 +26,7 @@ export const HelpOrderBlock = styled.TouchableOpacity`
   margin-top: 10px;
   border-radius: 4px;
   padding: 10px;
+  border: 1px solid #dddddd;
 `;
 export const HelpOrderHeader = styled.View`
   flex-direction: row;

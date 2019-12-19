@@ -28,7 +28,7 @@ export const CheckInItem = styled.View`
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
-  border: 1px solid #eee;
+  border: 1px solid #dddddd;
   border-radius: 4px;
 `;
 export const Item = styled.Text`
