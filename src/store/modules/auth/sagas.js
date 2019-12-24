@@ -6,11 +6,9 @@ import { signInSucess, signFailure } from './actions';
 
 export function* singIn({ payload }) {
   try {
-    const { id } = payload;
+    const { email } = payload;
 
-    const res = yield call(api.post, 'sessionsStudent', {
-      id,
-    });
+    const res = yield call(api.get, `/students/${email}/appLogin`);
 
     const student = res.data;
 
@@ -21,9 +19,9 @@ export function* singIn({ payload }) {
   }
 }
 
-export function singOut() {}
+export function dummy() {}
 
 export default all([
+  takeLatest('persist/REHYDRATE', dummy),
   takeLatest('@auth/SIGN_IN_REQUEST', singIn),
-  takeLatest('@auth/SIGN_OUT', singOut),
 ]);

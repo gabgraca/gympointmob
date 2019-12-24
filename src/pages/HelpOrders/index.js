@@ -1,7 +1,12 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
-
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { formatRelative, parseISO } from 'date-fns';
+import pt from 'date-fns/locale/pt';
+import { withNavigationFocus } from 'react-navigation';
+import api from '~/services/api';
 import Header from '~/components/Header';
+
 import {
   Container,
   NewHOButton,
@@ -13,46 +18,32 @@ import {
   Question,
 } from './styles';
 
-export default function HelpOrders({ navigation }) {
-  const helpOrders = [
-    {
-      id: '1',
-      status: 'Sem Resposta',
-      date: 'Hoje às 14h',
-      question:
-        'Olá pessoal da academia, gostaria de saber se quando acordade devo ngerir batata doce e frango logo de primeira com um monte de coisa tipo salsicha e pao de amburguer',
-    },
-    {
-      id: '2',
-      status: 'Respondido',
-      date: 'Hoje às 14h',
-      question:
-        'Olá pessoal da academia, gostaria de saber se quando acordade devo ngerir batata doce e frango logo de primeira com um monte de coisa tipo salsicha e pao de amburguer',
-    },
-    {
-      id: '3',
-      status: 'Sem Resposta',
-      date: 'Hoje às 14h',
-      question:
-        'Olá pessoal da academia, gostaria de saber se quando acordade devo ngerir batata doce e frango logo de primeira com um monte de coisa tipo salsicha e pao de amburguer',
-    },
+function HelpOrders({ navigation }) {
+  const id = useSelector(state => state.auth.id);
+  const [helpOrders, setHelpOrders] = useState([]);
+  const focus = navigation.isFocused();
+  async function loadHelpOrders() {
+    const response = await api.get(`/students/${id}/help-orders`);
+    const dados = response.data.map(data => {
+      return {
+        id: data.id,
+        status: data.answer_at ? true : null,
+        date: formatRelative(parseISO(data.updatedAt), new Date(), {
+          locale: pt,
+        }),
+        question: data.question,
+        answer: data.answer,
+      };
+    });
 
-    {
-      id: '4',
-      status: 'Sem Resposta',
-      date: 'Hoje às 14h',
-      question:
-        'Olá pessoal da academia, gostaria de saber se quando acordade devo ngerir batata doce e frango logo de primeira com um monte de coisa tipo salsicha e pao de amburguer',
-    },
+    setHelpOrders(dados);
+  }
+  useEffect(() => {
+    if (focus) {
+      loadHelpOrders();
+    }
+  }, [focus]); // eslint-disable-line
 
-    {
-      id: '5',
-      status: 'Sem Resposta',
-      date: 'Hoje às 14h',
-      question:
-        'Olá pessoal da academia, gostaria de saber se quando acordade devo ngerir batata doce e frango logo de primeira com um monte de coisa tipo salsicha e pao de amburguer',
-    },
-  ];
   return (
     <>
       <Container>
@@ -63,9 +54,13 @@ export default function HelpOrders({ navigation }) {
           data={helpOrders}
           keyExtractor={item => String(item.id)}
           renderItem={({ item }) => (
-            <HelpOrderBlock onPress={() => navigation.navigate('Answer')}>
+            <HelpOrderBlock
+              onPress={() => navigation.navigate('Answer', { answer: item })}
+            >
               <HelpOrderHeader>
-                <AnswerStatus>{item.status}</AnswerStatus>
+                <AnswerStatus status={item.status}>
+                  {item.status ? 'Respondido' : 'Sem Resposta'}
+                </AnswerStatus>
                 <AnswerDate>{item.date}</AnswerDate>
               </HelpOrderHeader>
               <Question>{item.question}</Question>
@@ -79,3 +74,5 @@ export default function HelpOrders({ navigation }) {
 HelpOrders.navigationOptions = {
   headerTitle: <Header />,
 };
+
+export default withNavigationFocus(HelpOrders);

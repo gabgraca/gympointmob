@@ -1,18 +1,33 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { Container, Form, SubmitButton, Input, Text } from './styles';
+
+import { signInRequest } from '~/store/modules/auth/actions';
 
 import logo from '~/assets/logo.png';
 
 export default function SignIn() {
-  function handleSubmit() {}
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState('');
+  const loading = useSelector(state => state.auth.loading);
+
+  function handleSubmit() {
+    dispatch(signInRequest(email));
+  }
   return (
     <Container>
       <Form>
         <Image source={logo} />
         <Text>GYMPOINT</Text>
-        <Input placeholder="Informe seu ID de cadastro" />
-        <SubmitButton onPress={handleSubmit}>Entrar no sistema</SubmitButton>
+        <Input
+          value={email}
+          onChangeText={setEmail}
+          placeholder="Informe seu email de cadastro"
+        />
+        <SubmitButton loading={loading} onPress={handleSubmit}>
+          Entrar no sistema
+        </SubmitButton>
       </Form>
     </Container>
   );

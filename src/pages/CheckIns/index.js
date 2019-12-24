@@ -1,8 +1,12 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { formatRelative, parseISO } from 'date-fns';
+import pt from 'date-fns/locale/pt';
+import { Alert } from 'react-native';
 import Header from '~/components/Header';
-
+import api from '~/services/api';
 import {
   Container,
   SubmitButton,
@@ -13,8 +17,33 @@ import {
 } from './styles';
 
 export default function CheckIns() {
-  const checkins = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
-  function handlePress() {}
+  const [checkins, setCheckins] = useState([]);
+  const id = useSelector(state => state.auth.id);
+  async function loadCheckins() {
+    const response = await api.get(`/students/${id}/checkins`);
+    const dataFormating = response.data.map(data => {
+      const dataForm = formatRelative(parseISO(data.createdAt), new Date(), {
+        locale: pt,
+      });
+      return {
+        id: data.id,
+        dataFormatted: dataForm,
+      };
+    });
+    setCheckins(dataFormating);
+  }
+  useEffect(() => {
+    loadCheckins();
+  }, []); // eslint-disable-line
+  async function handlePress() {
+    try {
+      await api.post(`/students/${id}/checkins`);
+      loadCheckins();
+    } catch (error) {
+      console.tron.log(error);
+      Alert.alert('Erro no checkin');
+    }
+  }
   return (
     <>
       <Header />
@@ -23,11 +52,11 @@ export default function CheckIns() {
 
         <CheckInsList
           data={checkins}
-          keyExtractor={item => String(item)}
+          keyExtractor={item => String(item.id)}
           renderItem={({ item }) => (
             <CheckInItem>
-              <Item>{`Check-in #${item}`}</Item>
-              <Description>Hoje às 14h</Description>
+              <Item>{`Check-in #${item.id}`}</Item>
+              <Description>{item.dataFormatted}</Description>
             </CheckInItem>
           )}
         />

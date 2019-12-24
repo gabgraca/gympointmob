@@ -36,7 +36,7 @@ export const HelpOrderHeader = styled.View`
 `;
 export const AnswerStatus = styled.Text`
   font-weight: bold;
-  color: #999999;
+  color: ${props => (props.status ? '#42CB59' : '#999999')};
 `;
 export const AnswerDate = styled.Text`
   color: #999999;
