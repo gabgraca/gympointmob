@@ -10,45 +10,46 @@ import HelpOrders from '~/pages/HelpOrders';
 import Answer from '~/pages/Answer';
 import NewHO from '~/pages/NewHO';
 
-export default createAppContainer(
-  createSwitchNavigator(
-    {
-      Sign: createSwitchNavigator({
-        SignIn,
-      }),
-      App: createBottomTabNavigator(
-        {
-          CheckIns,
-          Help: {
-            screen: createStackNavigator({
-              HelpOrders,
-              Answer,
-              NewHO,
-            }),
-            navigationOptions: {
-              tabBarLabel: 'Pedir ajuda',
-              tabBarIcon: ({ tintColor }) => (
-                <Icon name="live-help" size={20} color={tintColor} />
-              ),
+export default (signedIn = false) =>
+  createAppContainer(
+    createSwitchNavigator(
+      {
+        Sign: createSwitchNavigator({
+          SignIn,
+        }),
+        App: createBottomTabNavigator(
+          {
+            CheckIns,
+            Help: {
+              screen: createStackNavigator({
+                HelpOrders,
+                Answer,
+                NewHO,
+              }),
+              navigationOptions: {
+                tabBarLabel: 'Pedir ajuda',
+                tabBarIcon: ({ tintColor }) => (
+                  <Icon name="live-help" size={20} color={tintColor} />
+                ),
+              },
             },
           },
-        },
-        {
-          tabBarOptions: {
-            activeTintColor: '#ee4d64',
-            labelStyle: {
-              fontSize: 16,
+          {
+            tabBarOptions: {
+              activeTintColor: '#ee4d64',
+              labelStyle: {
+                fontSize: 16,
+              },
+              style: {
+                height: 70,
+                padding: 15,
+              },
             },
-            style: {
-              height: 70,
-              padding: 15,
-            },
-          },
-        }
-      ),
-    },
-    {
-      initialRouteName: 'App',
-    }
-  )
-);
+          }
+        ),
+      },
+      {
+        initialRouteName: signedIn ? 'App' : 'Sign',
+      }
+    )
+  );

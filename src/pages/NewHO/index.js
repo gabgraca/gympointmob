@@ -1,11 +1,20 @@
 import React from 'react';
-import { Text } from 'react-native';
+
 import Header from '~/components/Header';
 
-// import { Container } from './styles';
+import { Container, SendOrderButton, Input } from './styles';
 
 export default function NewHO() {
-  return <Text>New HO</Text>;
+  return (
+    <Container>
+      <Input
+        multiline
+        textAlignVertical="top"
+        placeholder="Inclua seu pedido de auxílio"
+      />
+      <SendOrderButton>Enviar Pedido</SendOrderButton>
+    </Container>
+  );
 }
 
 NewHO.navigationOptions = {
